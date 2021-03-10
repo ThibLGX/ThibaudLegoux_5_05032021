@@ -1,0 +1,15 @@
+main .card {
+  border-radius: 20px;
+  border-color: orange;
+  box-shadow: 7px 7px 5px lightgray; }
+  main .card h4 {
+    margin-top: 10px; }
+main img {
+  border-top-right-radius: 20px;
+  border-top-left-radius: 20px; }
+main input {
+  background-color: orange;
+  border-radius: 20px;
+  border: 1px solid gray; }
+
+/*# sourceMappingURL=style.css.map */
