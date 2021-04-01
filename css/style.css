@@ -7,9 +7,10 @@ main .card {
 main img {
   border-top-right-radius: 20px;
   border-top-left-radius: 20px; }
-main input {
-  background-color: orange;
-  border-radius: 20px;
-  border: 1px solid gray; }
+main .valid {
+  background-color: #ffd000;
+  padding: 10px;
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px; }
 
 /*# sourceMappingURL=style.css.map */

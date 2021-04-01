@@ -64,9 +64,47 @@
                         </div>
 
                         <div class="sommeOfPanier">
-                            <div class="card-text">montant total</div>
-                            <div class="card-text">vider le panier</div>
+                            <div class="card-text"></div>
                         </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-8 bg-warning sheet">
+                <div class=" mb-1 mb-lg-0 ">
+                    <div class="card-body" id="formulaire">
+                        <h2 class="card-title text-center">Formulaire de commande</h2>
+                        <form action="">
+                            <div class="form-group nameForm">
+                                <label for="name">Nom</label>
+                                <input type="text" name="nameForm" id="nameForm" class="form-control has-error"
+                                    placeholder="Pichon">
+                            </div>
+                            <div class="form-group fornameForm">
+                                <label for="name">Prénom</label>
+                                <input type="text" name="fornameForm" id="fornameForm" class="form-control"
+                                    placeholder="Jean-Louis">
+                            </div>
+                            <div class="form-group emailForm">
+                                <label for="name">Email</label>
+                                <input type="email" name="email" id="emailForm" class="form-control"
+                                    placeholder="jean-louis_pichon@outlook.fr">
+                            </div>
+                            <div class="form-group adressForm">
+                                <label for="numéro&street">Adresse</label>
+                                <input type="text" name="street" id="adressForm" class="form-control"
+                                    placeholder="4 rue Pasteur">
+                            </div>
+                            <div class="form-group codeForm">
+                                <label for="numéro&street">Code Postal</label>
+                                <input type="text" name="city" id="codeForm" class="form-control" placeholder="21231">
+                            </div>
+                            <div class="form-group cityForm">
+                                <label for="numéro&street">Ville</label>
+                                <input type="text" name="city" id="cityForm" class="form-control" placeholder="Dijon">
+                            </div>
+                            <button id="validForm" type="submit" name="validForm" class="btn btn-success">Passer
+                                commande</button>
+                        </form>
                     </div>
                 </div>
             </div>

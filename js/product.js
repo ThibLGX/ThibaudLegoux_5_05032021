@@ -2,16 +2,19 @@
 
 function main() {
 
-    // recupération de l'ours selectionné par son Id
+    // ###################      recupération de l'ours selectionné par son Id   #########
     const urlParams = new URLSearchParams(window.location.search.substr(1));
     const myParam = urlParams.get('idproduct');
+    //traduction de JSON en JS pour récupérer le stockage
     const products = JSON.parse(sessionStorage.getItem("products"))
     const productTeddie = products.find(p => p._id === myParam);
-
+    console.log(productTeddie)
 
     // recupération des listes de couleur pour chaque ours 
+    // création d'un string vide pour y insérer ce que l'on va récupérer
     let optionString = ""
 
+    //  bloucle "forEach" pour recupérer le string associé de la value couleur
     productTeddie.colors.forEach(
         function (color, i) {
             optionString += `<option value="${i}">${color}</option>`
@@ -29,6 +32,7 @@ function main() {
                 <div class="card-body">
                     <h3 class="card-title text-center">${productTeddie.name}</h3>
                     <p class="card-text">${productTeddie.description}</p>
+                    <p class="card-text">${productTeddie._id}</p>
                     <select class="form-select" id="colorOption" aria-label="Default select example">
                         ${optionString}
                     </select>
@@ -51,15 +55,21 @@ function main() {
 
     const btnPanier = document.querySelector("#btnPanier")
 
-    // ecouter le bouton pour envoyer le panier
+    // ################ ECOUTER le bouton pour envoyer le panier  ###############
     btnPanier.addEventListener("click", (event) => {
         event.preventDefault();
 
         // -------------- recupération des paramètres du choix -----------------
         // récupération de la couleur grace à sa value associée
         const colorChoise = productTeddie.colors.find((color, i) => i == option.value);
+        // récupération du nom
         const nameProduct = productTeddie.name;
+        // récupération du prix
         const priceProduct = productTeddie.price / 100;
+
+        //recup id
+        const idProduct = productTeddie._id
+        console.log(productTeddie._id)
 
 
         // recupérer les informmations selectionné
@@ -67,14 +77,20 @@ function main() {
             nameProduct: nameProduct,
             priceProduct: priceProduct,
             colorProduct: colorChoise,
-            quantityProduct: 1
+            quantityProduct: 1,
+            idProduct: idProduct
         };
-        console.log(detailProductSelect)
+
 
         // --------------     stokage des produits selectionné  --------------------------
         // il faut transformer en .JSON pour stocker dans le localStorage
         let saveProduct = JSON.parse(localStorage.getItem("productTeddie"));
-        console.log(localStorage.getItem("productTeddie"));
+
+        // fonction de mise en stockage local
+        function AdTeddieStockage() {
+            saveProduct.push(detailProductSelect);
+            localStorage.setItem("productTeddie", JSON.stringify(saveProduct));
+        }
 
         // fonction du message de confirmation
         function messageConfirm() {
@@ -88,21 +104,19 @@ function main() {
             }
         }
 
-        // mettre une condition si il y a déjà des produits dans le panier
+        // CONDITION si il y a déjà des produits dans le panier
         if (saveProduct) {
-            saveProduct.push(detailProductSelect);
-            localStorage.setItem("productTeddie", JSON.stringify(saveProduct));
+            AdTeddieStockage();
             messageConfirm()
         }
+        // CONDITION si il n'y a PAS déjà des produits dans le panier
         else {
             saveProduct = [];
-            saveProduct.push(detailProductSelect);
-            localStorage.setItem("productTeddie", JSON.stringify(saveProduct));
+            AdTeddieStockage();
             messageConfirm()
         }
 
     });
-
 };
 
 window.onload = main
