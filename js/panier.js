@@ -1,6 +1,11 @@
 // récupération des produits du localStorage au paravant selectionné (et transformé en JS)
 let saveProduct = JSON.parse(localStorage.getItem("productTeddie")) ?? []
 
+let tableauId = []
+for (d = 0; d < saveProduct.length; d++) {
+    tableauId.push(saveProduct[d].idProduct)
+}
+
 // ##########    Affichage des produits dans la page HTML  ########
 function injectionHTMLPanir() {
     // selection du container de la card-list
@@ -37,7 +42,6 @@ function injectionHTMLPanir() {
     }
 }
 
-
 // BOUTON supprimer un article du panier
 function trashOneProduct() {
     // enumération des boutons présent dans la liste
@@ -58,7 +62,6 @@ function trashOneProduct() {
         })
     }
 }
-
 
 //  #######   Addition des articles pour avoir la somme totale du panier
 function additionPrice() {
@@ -112,7 +115,6 @@ async function trashAllPanier() {
 }
 
 
-
 //  ##############################  FORMULAIRE  ##########################################
 function formulaire() {
     //************** Ecoute du bouton de validation du formulaire ******
@@ -126,17 +128,21 @@ function formulaire() {
 
         // création du formulaire 
         const formulaire = {
-            name: document.querySelector("#nameForm").value,
-            forname: document.querySelector("#fornameForm").value,
-            email: document.querySelector("#emailForm").value,
-            adress: document.querySelector("#adressForm").value,
-            code: document.querySelector("#codeForm").value,
-            city: document.querySelector("#cityForm").value
+            contact: {
+                lastName: document.querySelector("#nameForm").value,
+                firstName: document.querySelector("#fornameForm").value,
+                email: document.querySelector("#emailForm").value,
+                address: document.querySelector("#adressForm").value,
+                // code: document.querySelector("#codeForm").value,
+                city: document.querySelector("#cityForm").value,
+            },
+            products: tableauId
         }
+
         // validation du formulaire
         // validation du nom
         function controlName() {
-            const validName = formulaire.name
+            const validName = formulaire.contact.lastName
             if (/^[A-Z a-z Ü-ü \'\-\ ]{3,20}$/.test(validName)) {
                 return true;
             }
@@ -147,7 +153,7 @@ function formulaire() {
         }
         // validation du prénom
         function controlForname() {
-            const validForname = formulaire.forname
+            const validForname = formulaire.contact.firstName
             if (/^[A-Z a-z Ü-ü\'\-\  ]{3,20}$/.test(validForname)) {
                 return true;
             }
@@ -158,7 +164,7 @@ function formulaire() {
         }
         // validation de l'email
         function controlEmail() {
-            const validEmail = formulaire.email
+            const validEmail = formulaire.contact.email
             if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(validEmail)) {
                 return true;
             }
@@ -169,7 +175,7 @@ function formulaire() {
         }
         // validation de l'adresse
         function controlAdress() {
-            const validAdress = formulaire.adress
+            const validAdress = formulaire.contact.address
             if (/^[A-Z a-z 0-9 Ü-ü \'\-\  \s]{6,30}$/.test(validAdress)) {
                 return true;
             }
@@ -179,19 +185,19 @@ function formulaire() {
             }
         }
         // validation du code postal
-        function controlCode() {
-            const validCode = formulaire.code
-            if (/^[0-9]{5}$/.test(validCode)) {
-                return true;
-            }
-            else {
-                alert("format du code postal invalide")
-                return false;
-            }
-        }
+        // function controlCode() {
+        //     const validCode = formulaire.code
+        //     if (/^[0-9]{5}$/.test(validCode)) {
+        //         return true;
+        //     }
+        //     else {
+        //         alert("format du code postal invalide")
+        //         return false;
+        //     }
+        // }
         // validation de la ville
         function controlCity() {
-            const validCity = formulaire.city
+            const validCity = formulaire.contact.city
             if (/^[A-Z a-z Ü-ü\'\-\ ]{3,30}$/.test(validCity)) {
                 return true;
             }
@@ -200,23 +206,37 @@ function formulaire() {
                 return false;
             }
         }
-        function condition() {
-            // condition pour envoyer le nom dans le local storage
-            if (controlName() && controlForname() && controlEmail() && controlCode() && controlCity() && controlAdress()) {
-                // traduction en JSON pour rentrer dans la key
-                localStorage.setItem("formulaire", JSON.stringify(formulaire))
-                window.location.href = "confirmation.html"
-            }
-            else {
-                alert("formulaire invalide")
-            }
+
+        // fonction de la methode POST fetch pour envoyer les informations de la commande au serveur
+        function sendServ() {
+            fetch("http://localhost:3000/api/teddies/order", {
+                method: "POST",
+                body: JSON.stringify(formulaire),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+                .then(async (response) => { return response.json() })
+                .then(async (response) => {
+                    localStorage.setItem('orderId', JSON.stringify(response));
+                    window.location.replace("confirmation.html")
+                })
         }
-        condition()
-        // OBJET de données à envoyer au server pour la commande (panier et formulaire)
-        const dosSend = {
-            saveProduct,
-            formulaire
+        // condition pour envoyer le nom dans le local storage
+        if (controlName() && controlForname() && controlEmail() && controlCity() && controlAdress()) {
+            // traduction en JSON pour rentrer dans la key
+            localStorage.setItem("formulaire", JSON.stringify(formulaire));
+            // envoi au serveur
+            sendServ();
+            // suppression de l'historique de la commande
+            localStorage.removeItem("productTeddie");
+            localStorage.removeItem("formulaire");
+
         }
+        else {
+            alert("formulaire invalide")
+        }
+
     })
 }
 function main() {
@@ -224,7 +244,6 @@ function main() {
     trashOneProduct();
     additionPrice();
     trashAllPanier();
-    formulaire()
+    formulaire();
 }
-console.log(main)
 window.onload = main
